@@ -19,10 +19,7 @@ import dictionary from '@/englishWordsWith5Letters.json';
 defineProps({
   wordOfTheDay: {
     type: String,
-    validator: (wordGiven: string): boolean =>
-        wordGiven.length === 5
-        && wordGiven.toUpperCase() === wordGiven
-        && dictionary.includes(wordGiven)
+    validator: (wordGiven: string): boolean => dictionary.includes(wordGiven)
   }
 })
 
