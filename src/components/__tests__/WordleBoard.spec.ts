@@ -62,8 +62,15 @@ describe('HelloWorld', () => {
       await playerSubmitGuess(wordOfTheDay + 'EXTRA');
       expect(wrapper.text()).toContain(VICTORY_MESSAGE);
     });
-    test.todo('player guesses can only be submitted if they are real words')
-    test.todo('player guesses are limited to 5 letters')
-    test.todo('player guesses are limited to 5 letters')
+    test('player guesses can only be submitted if they are real words', async () => {
+      await playerSubmitGuess('QWERT');
+      expect(wrapper.text()).not.toContain(VICTORY_MESSAGE);
+      expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE);
+    });
+    test('player guesses are not case sensitive', async () => {
+      await playerSubmitGuess(wordOfTheDay.toLowerCase());
+      expect(wrapper.text()).toContain(VICTORY_MESSAGE);
+    })
+    test.todo('player guesses can only contain letters')
   })
 })

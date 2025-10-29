@@ -1,8 +1,9 @@
 <template>
   <input
     v-model="formattedGuessInProgress"
-    @keydown.enter="guessSubmitted = guessInProgress"
+    @keydown.enter="onSubmitted"
     type="text"
+    :maxlength="WORD_SIZE"
   />
   <template v-if="guessSubmitted.length > 0 ">
     <p v-if="guessSubmitted === wordOfTheDay"> {{ VICTORY_MESSAGE }} </p>
@@ -29,8 +30,15 @@ const formattedGuessInProgress = computed({
     return guessInProgress;
   },
   set (raw: string) {
-    guessInProgress.value = raw.slice(0, WORD_SIZE);
+    guessInProgress.value = raw.slice(0, WORD_SIZE).toUpperCase();
   }
 })
+
+function onSubmitted () {
+  if (!dictionary.includes(guessInProgress.value)) {
+    return;
+  }
+  guessSubmitted.value = guessInProgress.value;
+}
 
 </script>
