@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, type Ref} from 'vue';
-import {VICTORY_MESSAGE, DEFEAT_MESSAGE, WORD_SIZE} from '@/settings';
+import {computed, nextTick, ref} from 'vue';
+import { DEFEAT_MESSAGE, VICTORY_MESSAGE, WORD_SIZE } from '@/settings';
 import dictionary from '@/englishWordsWith5Letters.json';
 
 defineProps({
@@ -23,22 +23,26 @@ defineProps({
   }
 })
 
-const guessInProgress: Ref<string> = ref('');
-const guessSubmitted: Ref<string> = ref('');
-const formattedGuessInProgress = computed({
+const guessInProgress = ref<string|null>(null);
+const guessSubmitted = ref<string>('');
+const formattedGuessInProgress = computed<string>({
   get () {
-    return guessInProgress;
+    return guessInProgress.value ?? '';
   },
   set (raw: string) {
-    guessInProgress.value = raw.slice(0, WORD_SIZE).toUpperCase();
+    guessInProgress.value = null;
+    guessInProgress.value = raw
+      .slice(0, WORD_SIZE)
+      .toUpperCase()
+      .replace(/[^A-Z]+/gi, '');
   }
 })
 
 function onSubmitted () {
-  if (!dictionary.includes(guessInProgress.value)) {
+  if (!dictionary.includes(formattedGuessInProgress.value)) {
     return;
   }
-  guessSubmitted.value = guessInProgress.value;
+  guessSubmitted.value = formattedGuessInProgress.value;
 }
 
 </script>

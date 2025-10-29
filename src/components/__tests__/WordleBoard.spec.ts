@@ -2,6 +2,8 @@ import { mount } from '@vue/test-utils'
 import {DEFEAT_MESSAGE, VICTORY_MESSAGE, WORD_SIZE} from '@/settings';
 import WordleBoard from '../WordleBoard.vue'
 import {beforeEach, describe, expect} from 'vitest';
+import {HTMLInputElement} from 'happy-dom';
+import {nextTick} from 'vue';
 
 describe('HelloWorld', () => {
   let wordOfTheDay: string = 'TESTS';
@@ -70,7 +72,18 @@ describe('HelloWorld', () => {
     test('player guesses are not case sensitive', async () => {
       await playerSubmitGuess(wordOfTheDay.toLowerCase());
       expect(wrapper.text()).toContain(VICTORY_MESSAGE);
+    });
+    test('player guesses can only contain letters', async () => {
+      await playerSubmitGuess('H3!RT');
+      // @ts-ignore
+      const inputEl = wrapper.find<HTMLInputElement>('input[type=text]').element;
+      // @ts-ignore
+      expect(inputEl.value).toEqual('HRT');
+    });
+    test('non-letter characters doesnt render on the screen while typed', async () => {
+      await playerSubmitGuess('333');
+      // @ts-ignore
+      expect(wrapper.find<HTMLInputElement>('input[type=text]').element.value).toEqual('');
     })
-    test.todo('player guesses can only contain letters')
   })
 })
