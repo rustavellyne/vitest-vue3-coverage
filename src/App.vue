@@ -4,6 +4,6 @@ import WordleBoard from '@/components/WordleBoard.vue';
 
 <template>
   <main>
-    <wordle-board msg="You did it!" />
+    <wordle-board word-of-the-day="You did it!" />
   </main>
 </template>
