@@ -1,6 +1,6 @@
 <template>
   <input
-    v-model="guessInProgress"
+    v-model="formattedGuessInProgress"
     @keydown.enter="guessSubmitted = guessInProgress"
     type="text"
   />
@@ -11,10 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import {computed, ref, type Ref} from 'vue';
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings';
 import dictionary from '@/englishWordsWith5Letters.json';
-
 
 defineProps({
   wordOfTheDay: {
@@ -25,5 +24,13 @@ defineProps({
 
 const guessInProgress: Ref<string> = ref('');
 const guessSubmitted: Ref<string> = ref('');
+const formattedGuessInProgress = computed({
+  get () {
+    return guessInProgress;
+  },
+  set (raw: string) {
+    guessInProgress.value = raw.slice(0, 5);
+  }
+})
 
 </script>

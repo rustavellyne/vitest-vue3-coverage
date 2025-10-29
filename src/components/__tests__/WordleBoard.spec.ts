@@ -38,22 +38,32 @@ describe('HelloWorld', () => {
     });
   })
   describe('Rules for defining word of the day', () => {
-    test.each(['HI', 'HELL', 'QWERTY'])(
-      `if '%s' provided, a warning is emitted`, async (wordOfTheDay: string) => {
+    beforeEach(() => {
       console.warn = vi.fn();
+    })
+    test.each([
+      { wordOfTheDay: 'HI', reason: 'word of the day must have 5 characters' },
+      { wordOfTheDay: 'HEll', reason: 'word of the day must be in uppercase' },
+      { wordOfTheDay: 'QWERTY', reason: 'word of the day must be a valid English word' }
+    ])(
+      `Since $reason: $wordOfTheDay is invalid, therefore a warning is emitted`, async ({ wordOfTheDay }) => {
 
       mount(WordleBoard, { props: { wordOfTheDay } });
       expect(console.warn).toHaveBeenCalled()
     });
 
     test('no warning is emitted if the word if the day provided is real uppercase English word within 5 characters', async () => {
-      console.warn = vi.fn();
-
       mount(WordleBoard, { props: { wordOfTheDay } });
       expect(console.warn).not.toHaveBeenCalled()
     });
   })
   describe('Player input', () => {
-
+    test('player guesses are limited to 5 letters', async () => {
+      await playerSubmitGuess(wordOfTheDay + 'EXTRA');
+      expect(wrapper.text()).toContain(VICTORY_MESSAGE);
+    });
+    test.todo('player guesses can only be submitted if they are real words')
+    test.todo('player guesses are limited to 5 letters')
+    test.todo('player guesses are limited to 5 letters')
   })
 })
