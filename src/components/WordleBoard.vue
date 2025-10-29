@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import {computed, ref, type Ref} from 'vue';
-import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings';
+import {VICTORY_MESSAGE, DEFEAT_MESSAGE, WORD_SIZE} from '@/settings';
 import dictionary from '@/englishWordsWith5Letters.json';
 
 defineProps({
@@ -29,7 +29,7 @@ const formattedGuessInProgress = computed({
     return guessInProgress;
   },
   set (raw: string) {
-    guessInProgress.value = raw.slice(0, 5);
+    guessInProgress.value = raw.slice(0, WORD_SIZE);
   }
 })
 
