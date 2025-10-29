@@ -11,8 +11,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref, type Ref } from 'vue';
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings';
-import { ref } from 'vue';
+
 
 defineProps<{
   wordOfTheDay: string
