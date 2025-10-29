@@ -57,5 +57,10 @@ describe('HelloWorld', () => {
     expect(console.warn).toHaveBeenCalled()
   });
 
+  test('no warning is emitted if the word if the day provided is real uppercase English word within 5 characters', async () => {
+    console.warn = vi.fn();
 
+    mount(WordleBoard, { props: { wordOfTheDay } });
+    expect(console.warn).not.toHaveBeenCalled()
+  });
 })
