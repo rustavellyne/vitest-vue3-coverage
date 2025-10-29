@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { DEFEAT_MESSAGE, VICTORY_MESSAGE } from '@/settings';
 import WordleBoard from '../WordleBoard.vue'
-import {beforeEach, expect} from 'vitest';
+import {beforeEach, describe, expect} from 'vitest';
 
 describe('HelloWorld', () => {
   let wordOfTheDay: string = 'TESTS';
@@ -16,51 +16,44 @@ describe('HelloWorld', () => {
   beforeEach(() => {
     wrapper = mount(WordleBoard, { props: { wordOfTheDay } });
   });
-  test('a victory message appears when the user makes a guess that matches the word of the day', async () => {
-    // Arrange
-    // Act
-    await playerSubmitGuess(wordOfTheDay)
+  describe('End of game messages', () => {
+    test('a victory message appears when the user makes a guess that matches the word of the day', async () => {
+      // Arrange
+      // Act
+      await playerSubmitGuess(wordOfTheDay)
 
-   // Assert
-    expect(wrapper.text()).toContain(VICTORY_MESSAGE);
-  });
-  test('a defeat message appears if the user makes a guess that is incorrect', async () => {
-    // Act
-    await playerSubmitGuess('WRONG')
+      // Assert
+      expect(wrapper.text()).toContain(VICTORY_MESSAGE);
+    });
+    test('a defeat message appears if the user makes a guess that is incorrect', async () => {
+      // Act
+      await playerSubmitGuess('WRONG')
 
-    // Assert
-    expect(wrapper.text()).toContain(DEFEAT_MESSAGE);
-  });
-  test('no end-of-game appears if the user has not yet made a guess', async () => {
-    expect(wrapper.text()).not.toContain(VICTORY_MESSAGE);
-    expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE);
-  });
+      // Assert
+      expect(wrapper.text()).toContain(DEFEAT_MESSAGE);
+    });
+    test('no end-of-game appears if the user has not yet made a guess', async () => {
+      expect(wrapper.text()).not.toContain(VICTORY_MESSAGE);
+      expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE);
+    });
+  })
+  describe('Rules for defining word of the day', () => {
+    test.each(['HI', 'HELL', 'QWERTY'])(
+      `if '%s' provided, a warning is emitted`, async (wordOfTheDay: string) => {
+      console.warn = vi.fn();
 
-  test('if the word of the day provided does not have exactly 5 characters, a warning is emitted', async () => {
-    console.warn = vi.fn();
+      mount(WordleBoard, { props: { wordOfTheDay } });
+      expect(console.warn).toHaveBeenCalled()
+    });
 
-    mount(WordleBoard, { props: { wordOfTheDay: 'HI' } });
-    expect(console.warn).toHaveBeenCalled()
-  });
+    test('no warning is emitted if the word if the day provided is real uppercase English word within 5 characters', async () => {
+      console.warn = vi.fn();
 
-  test('if the word of the day is not all in uppercase, a warning is emitted', async () => {
-    console.warn = vi.fn();
+      mount(WordleBoard, { props: { wordOfTheDay } });
+      expect(console.warn).not.toHaveBeenCalled()
+    });
+  })
+  describe('Player input', () => {
 
-    mount(WordleBoard, { props: { wordOfTheDay: 'HELL' } });
-    expect(console.warn).toHaveBeenCalled()
-  });
-
-  test('if the word of the day is not real word, a warning is emitted', async () => {
-    console.warn = vi.fn();
-
-    mount(WordleBoard, { props: { wordOfTheDay: 'QWERTY' } });
-    expect(console.warn).toHaveBeenCalled()
-  });
-
-  test('no warning is emitted if the word if the day provided is real uppercase English word within 5 characters', async () => {
-    console.warn = vi.fn();
-
-    mount(WordleBoard, { props: { wordOfTheDay } });
-    expect(console.warn).not.toHaveBeenCalled()
-  });
+  })
 })
