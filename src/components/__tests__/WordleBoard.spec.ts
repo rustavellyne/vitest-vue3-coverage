@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { DEFEAT_MESSAGE, VICTORY_MESSAGE } from '@/settings';
 import WordleBoard from '../WordleBoard.vue'
-import {beforeEach} from 'vitest';
+import {beforeEach, expect} from 'vitest';
 
 describe('HelloWorld', () => {
   let wordOfTheDay: string = 'TESTS';
@@ -35,4 +35,27 @@ describe('HelloWorld', () => {
     expect(wrapper.text()).not.toContain(VICTORY_MESSAGE);
     expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE);
   });
+
+  test('if the word of the day provided does not have exactly 5 characters, a warning is emitted', async () => {
+    console.warn = vi.fn();
+
+    mount(WordleBoard, { props: { wordOfTheDay: 'HI' } });
+    expect(console.warn).toHaveBeenCalled()
+  });
+
+  test('if the word of the day is not all in uppercase, a warning is emitted', async () => {
+    console.warn = vi.fn();
+
+    mount(WordleBoard, { props: { wordOfTheDay: 'HELL' } });
+    expect(console.warn).toHaveBeenCalled()
+  });
+
+  test('if the word of the day is not real word, a warning is emitted', async () => {
+    console.warn = vi.fn();
+
+    mount(WordleBoard, { props: { wordOfTheDay: 'QWERTY' } });
+    expect(console.warn).toHaveBeenCalled()
+  });
+
+
 })

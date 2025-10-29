@@ -13,11 +13,18 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
 import { VICTORY_MESSAGE, DEFEAT_MESSAGE } from '@/settings';
+import dictionary from '@/englishWordsWith5Letters.json';
 
 
-defineProps<{
-  wordOfTheDay: string
-}>()
+defineProps({
+  wordOfTheDay: {
+    type: String,
+    validator: (wordGiven: string): boolean =>
+        wordGiven.length === 5
+        && wordGiven.toUpperCase() === wordGiven
+        && dictionary.includes(wordGiven)
+  }
+})
 
 const guessInProgress: Ref<string> = ref('');
 const guessSubmitted: Ref<string> = ref('');
