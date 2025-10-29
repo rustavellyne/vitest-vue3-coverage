@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, nextTick, ref} from 'vue';
+import {computed, nextTick, ref, triggerRef} from 'vue';
 import { DEFEAT_MESSAGE, VICTORY_MESSAGE, WORD_SIZE } from '@/settings';
 import dictionary from '@/englishWordsWith5Letters.json';
 
@@ -35,6 +35,8 @@ const formattedGuessInProgress = computed<string>({
       .slice(0, WORD_SIZE)
       .toUpperCase()
       .replace(/[^A-Z]+/gi, '');
+
+    triggerRef(formattedGuessInProgress);
   }
 })
 
