@@ -81,7 +81,8 @@ describe('HelloWorld', () => {
       expect(inputEl.value).toEqual('HRT');
     });
     test('non-letter characters doesnt render on the screen while typed', async () => {
-      await playerSubmitGuess('333');
+      await playerSubmitGuess('123');
+      await playerSubmitGuess('345');
       // @ts-ignore
       expect(wrapper.find<HTMLInputElement>('input[type=text]').element.value).toEqual('');
     })
