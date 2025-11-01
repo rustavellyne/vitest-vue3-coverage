@@ -1,11 +1,13 @@
 <template>
-  <guess-input
-    @guess-submitted="guess => guessSubmitted = guess"
-  />
-  <template v-if="guessSubmitted.length > 0 ">
-    <p v-if="guessSubmitted === wordOfTheDay"> {{ VICTORY_MESSAGE }} </p>
-    <p v-else>{{ DEFEAT_MESSAGE }}</p>
-  </template>
+  <div>
+    <guess-input
+        @guess-submitted="guess => guessSubmitted = guess"
+    />
+    <template v-if="guessSubmitted.length > 0 ">
+      <p v-if="guessSubmitted === wordOfTheDay"> {{ VICTORY_MESSAGE }} </p>
+      <p v-else>{{ DEFEAT_MESSAGE }}</p>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">

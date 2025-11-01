@@ -1,9 +1,11 @@
 <template>
   <input
     v-model="formattedGuessInProgress"
-    @keydown.enter="onSubmitted"
     type="text"
     :maxlength="WORD_SIZE"
+    autofocus
+    @keydown.enter="onSubmitted"
+    @blur="({target}) => (target as HTMLInputElement).focus()"
   />
 </template>
 
