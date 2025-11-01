@@ -1,12 +1,23 @@
 <template>
-  <input
-    v-model="formattedGuessInProgress"
-    type="text"
-    :maxlength="WORD_SIZE"
-    autofocus
-    @keydown.enter="onSubmitted"
-    @blur="({target}) => (target as HTMLInputElement).focus()"
-  />
+  <div class="user-input">
+    <ul class="user-input__word">
+      <li
+        v-for="(letter, index) in formattedGuessInProgress.padEnd(WORD_SIZE, ' ')"
+        :key="`${letter}-${index}`"
+        :data-letter="letter"
+        class="user-input__letter"
+      >{{ letter }}</li>
+    </ul>
+    <input
+      v-model="formattedGuessInProgress"
+      type="text"
+      :maxlength="WORD_SIZE"
+      autofocus
+      @keydown.enter="onSubmitted"
+      @blur="({target}) => (target as HTMLInputElement).focus()"
+    />
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -40,3 +51,40 @@ function onSubmitted () {
 }
 
 </script>
+
+<style scoped>
+input {
+  position: absolute;
+  opacity: 0;
+}
+
+.user-input {
+  .user-input__word {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 0.25rem;
+  }
+  .user-input__letter {
+    background-color: #ffffff;
+    border: 1px solid hsl(0, 0%, 70%);
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bolder;
+
+    &:not([data-letter=" "]) {
+      animation: pop 0.1s;
+    }
+  }
+}
+
+@keyframes pop {
+  0% { transform: scale(1) }
+  100% { transform: scale(1.4) }
+}
+
+</style>

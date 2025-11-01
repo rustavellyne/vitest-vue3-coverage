@@ -20,6 +20,8 @@ import WordleBoard from '@/components/WordleBoard.vue';
 .board__item {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 </style>
