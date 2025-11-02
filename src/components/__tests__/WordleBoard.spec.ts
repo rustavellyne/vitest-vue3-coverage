@@ -9,10 +9,18 @@ describe('HelloWorld', () => {
   let wordOfTheDay: string = 'TESTS';
   let wrapper: ReturnType<typeof mount>;
 
-  async function playerSubmitGuess(guess: string) {
+  async function playerTypesGuess(guess: string) {
     const guessInput = wrapper.find('input[type=text]');
     await guessInput.setValue(guess);
-    await guessInput.trigger('keydown.enter');
+  }
+
+  async function playerPressesEnter() {
+    const guessInput = wrapper.find('input[type=text]');
+    guessInput.trigger('keydown.enter');
+  }
+  async function playerTypesAndSubmitsGuess(guess: string) {
+    await playerTypesGuess(guess);
+    await playerPressesEnter();
   }
 
   beforeEach(() => {
@@ -22,7 +30,7 @@ describe('HelloWorld', () => {
     test('a victory message appears when the user makes a guess that matches the word of the day', async () => {
       // Arrange
       // Act
-      await playerSubmitGuess(wordOfTheDay)
+      await playerTypesAndSubmitsGuess(wordOfTheDay)
 
       // Assert
       expect(wrapper.text()).toContain(VICTORY_MESSAGE);
@@ -38,7 +46,7 @@ describe('HelloWorld', () => {
     ])('a defeat message appears if the user makes a guess that is incorrect 6 times in row', ({numberOfGuesses, shouldSeeDefeatMessage}) => {
       test(`therefore for ${numberOfGuesses} guess(es), a defeat message should ${shouldSeeDefeatMessage ? '' : 'not'} appear`, async () => {
         for (let i = 0; i < numberOfGuesses; i++) {
-          await playerSubmitGuess('WRONG');
+          await playerTypesAndSubmitsGuess('WRONG');
         }
         if (shouldSeeDefeatMessage) {
           expect(wrapper.text()).toContain(DEFEAT_MESSAGE);
@@ -85,34 +93,34 @@ describe('HelloWorld', () => {
       expect(document.activeElement).toBe(wrapper.find('input[type=text]').element);
     });
     test(`player guesses are limited to ${WORD_SIZE} letters`, async () => {
-      await playerSubmitGuess(wordOfTheDay + 'EXTRA');
+      await playerTypesAndSubmitsGuess(wordOfTheDay + 'EXTRA');
       expect(wrapper.text()).toContain(VICTORY_MESSAGE);
     });
     test('player guesses can only be submitted if they are real words', async () => {
-      await playerSubmitGuess('QWERT');
+      await playerTypesAndSubmitsGuess('QWERT');
       expect(wrapper.text()).not.toContain(VICTORY_MESSAGE);
       expect(wrapper.text()).not.toContain(DEFEAT_MESSAGE);
     });
     test('player guesses are not case sensitive', async () => {
-      await playerSubmitGuess(wordOfTheDay.toLowerCase());
+      await playerTypesAndSubmitsGuess(wordOfTheDay.toLowerCase());
       expect(wrapper.text()).toContain(VICTORY_MESSAGE);
     });
     test('player guesses can only contain letters', async () => {
-      await playerSubmitGuess('H3!RT');
+      await playerTypesAndSubmitsGuess('H3!RT');
       // @ts-ignore
       const inputEl = wrapper.find<HTMLInputElement>('input[type=text]').element;
       // @ts-ignore
       expect(inputEl.value).toEqual('HRT');
     });
     test('non-letter characters doesnt render on the screen while typed', async () => {
-      await playerSubmitGuess('123');
-      await playerSubmitGuess('345');
+      await playerTypesAndSubmitsGuess('123');
+      await playerTypesAndSubmitsGuess('345');
       // @ts-ignore
       expect(wrapper.find<HTMLInputElement>('input[type=text]').element.value).toEqual('');
     });
 
     test('the input gets cleared after each submission', async () => {
-      await playerSubmitGuess('WRONG');
+      await playerTypesAndSubmitsGuess('WRONG');
       // @ts-ignore
       expect(wrapper.find('input[type=text]').element.value).toEqual('')
     });
@@ -120,13 +128,13 @@ describe('HelloWorld', () => {
     test('the player loses control after the max amount of guesses have been sent', async () => {
       const guesses = ['WRONG', 'GUESS', 'HELLO', 'WORLD', 'HAPPY', 'CODER'];
       for (const guess of guesses) {
-        await playerSubmitGuess(guess);
+        await playerTypesAndSubmitsGuess(guess);
       }
       expect(wrapper.find('input[type=text]').attributes('disabled')).not.toBeUndefined();
     });
 
     test('the player loses control after thecorrect guess have been given', async () => {
-      await playerSubmitGuess(wordOfTheDay);
+      await playerTypesAndSubmitsGuess(wordOfTheDay);
       expect(wrapper.find('input[type=text]').attributes('disabled')).not.toBeUndefined();
     })
   })
@@ -134,7 +142,7 @@ describe('HelloWorld', () => {
   test('All previous guesses done by the player are visible in the page', async () => {
     const guesses = ['WRONG', 'GUESS', 'HELLO', 'WORLD', 'HAPPY', 'CODER'];
     for (const guess of guesses) {
-      await playerSubmitGuess(guess);
+      await playerTypesAndSubmitsGuess(guess);
     }
     for (const guess of guesses) {
       expect(wrapper.text()).toContain(guess);
@@ -146,14 +154,14 @@ describe('HelloWorld', () => {
     });
 
     test(`${MAX_GUESSES_COUNT} guess-views are present when the player wins the game`, async () => {
-      await playerSubmitGuess(wordOfTheDay);
+      await playerTypesAndSubmitsGuess(wordOfTheDay);
       expect(wrapper.findAllComponents(GuessView)).toHaveLength(MAX_GUESSES_COUNT);
     })
 
     test(`${MAX_GUESSES_COUNT} guess-views are present as the player loses the game`, async () => {
       const guesses = ['WRONG', 'GUESS', 'HELLO', 'WORLD', 'HAPPY', 'CODER'];
       for (const guess of guesses) {
-        await playerSubmitGuess(guess);
+        await playerTypesAndSubmitsGuess(guess);
       }
       expect(wrapper.findAllComponents(GuessView)).toHaveLength(MAX_GUESSES_COUNT);
     })
