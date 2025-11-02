@@ -106,15 +106,15 @@ describe('HelloWorld', () => {
       expect(wrapper.text()).toContain(VICTORY_MESSAGE);
     });
     test('player guesses can only contain letters', async () => {
-      await playerTypesAndSubmitsGuess('H3!RT');
+      await playerTypesGuess('H3!RT');
       // @ts-ignore
       const inputEl = wrapper.find<HTMLInputElement>('input[type=text]').element;
       // @ts-ignore
       expect(inputEl.value).toEqual('HRT');
     });
     test('non-letter characters doesnt render on the screen while typed', async () => {
-      await playerTypesAndSubmitsGuess('123');
-      await playerTypesAndSubmitsGuess('345');
+      await playerTypesGuess('123');
+      await playerTypesGuess('345');
       // @ts-ignore
       expect(wrapper.find<HTMLInputElement>('input[type=text]').element.value).toEqual('');
     });
@@ -164,6 +164,25 @@ describe('HelloWorld', () => {
         await playerTypesAndSubmitsGuess(guess);
       }
       expect(wrapper.findAllComponents(GuessView)).toHaveLength(MAX_GUESSES_COUNT);
+    })
+  });
+
+  describe(`Displaying hints/feedback to the player`, () => {
+    test('hints are not displayed until a player submits a guess', async () => {
+      expect(
+        wrapper.find('[data-letter-feedback]').exists(),
+        'Feedback was being rendered before the player started typing the guess'
+      ).toBe(false)
+      await playerTypesGuess(wordOfTheDay);
+      expect(
+        wrapper.find('[data-letter-feedback]').exists(),
+        'Feedback was rendered while the player was typing the guess'
+      ).toBe(false);
+      await playerPressesEnter();
+      expect(
+        wrapper.find('[data-letter-feedback]').exists(),
+        'Feedback was not rendered after the player submitted their guess'
+      ).toBe(true);
     })
   })
 })
