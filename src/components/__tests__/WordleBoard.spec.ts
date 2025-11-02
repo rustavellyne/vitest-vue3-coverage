@@ -108,6 +108,22 @@ describe('HelloWorld', () => {
       await playerSubmitGuess('345');
       // @ts-ignore
       expect(wrapper.find<HTMLInputElement>('input[type=text]').element.value).toEqual('');
+    });
+
+    test('the input gets cleared after each submission', async () => {
+      await playerSubmitGuess('WRONG');
+      // @ts-ignore
+      expect(wrapper.find('input[type=text]').element.value).toEqual('')
     })
+  })
+
+  test('All previous guesses done by the player are visible in the page', async () => {
+    const guesses = ['WRONG', 'GUESS', 'HELLO', 'WORLD', 'HAPPY', 'CODER'];
+    for (const guess of guesses) {
+      await playerSubmitGuess(guess);
+    }
+    for (const guess of guesses) {
+      expect(wrapper.text()).toContain(guess);
+    }
   })
 })
