@@ -10,6 +10,7 @@
       </li>
     </ul>
     <guess-input
+      :disabled="isGameOver"
       @guess-submitted="guess => guessesSubmitted.push(guess)"
     />
     <template v-if="isGameOver">

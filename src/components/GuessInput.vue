@@ -6,6 +6,7 @@
       type="text"
       :maxlength="WORD_SIZE"
       autofocus
+      :disabled
       @keydown.enter="onSubmitted"
       @blur="({target}) => (target as HTMLInputElement).focus()"
     />
@@ -19,6 +20,7 @@ import { WORD_SIZE } from '@/settings';
 import dictionary from '@/englishWordsWith5Letters.json';
 import GuessView from '@/components/GuessView.vue';
 
+withDefaults(defineProps<{ disabled?: boolean }>(), { disabled: false })
 const emit = defineEmits<{
   'guess-submitted': [guess: string]
 }>()

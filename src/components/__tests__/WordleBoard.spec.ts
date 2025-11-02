@@ -114,6 +114,19 @@ describe('HelloWorld', () => {
       await playerSubmitGuess('WRONG');
       // @ts-ignore
       expect(wrapper.find('input[type=text]').element.value).toEqual('')
+    });
+
+    test('the player loses control after the max amount of guesses have been sent', async () => {
+      const guesses = ['WRONG', 'GUESS', 'HELLO', 'WORLD', 'HAPPY', 'CODER'];
+      for (const guess of guesses) {
+        await playerSubmitGuess(guess);
+      }
+      expect(wrapper.find('input[type=text]').attributes('disabled')).not.toBeUndefined();
+    });
+
+    test('the player loses control after thecorrect guess have been given', async () => {
+      await playerSubmitGuess(wordOfTheDay);
+      expect(wrapper.find('input[type=text]').attributes('disabled')).not.toBeUndefined();
     })
   })
 
