@@ -1,6 +1,6 @@
 <template>
   <div class="user-input">
-    <guess-view :guess="formattedGuessInProgress" />
+    <guess-view v-if="!disabled" :guess="formattedGuessInProgress" />
     <input
       v-model="formattedGuessInProgress"
       type="text"

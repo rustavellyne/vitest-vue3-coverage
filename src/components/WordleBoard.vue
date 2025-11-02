@@ -8,11 +8,17 @@
       >
         <guess-view :guess />
       </li>
+      <li class="guesses__item">
+        <guess-input
+          :disabled="isGameOver"
+          @guess-submitted="guess => guessesSubmitted.push(guess)"
+        />
+      </li>
+      <li class="guesses__item" v-for="guess in remaining">
+        <guess-view guess="" />
+      </li>
     </ul>
-    <guess-input
-      :disabled="isGameOver"
-      @guess-submitted="guess => guessesSubmitted.push(guess)"
-    />
+
     <template v-if="isGameOver">
       <p class="end-of-game-message"> {{ rightGuess ? VICTORY_MESSAGE : DEFEAT_MESSAGE }} </p>
     </template>
@@ -36,6 +42,10 @@ const props = defineProps({
 const guessesSubmitted = ref<string[]>([]);
 const rightGuess = computed(() => guessesSubmitted.value.includes(props.wordOfTheDay));
 const isGameOver = computed(() => rightGuess.value || guessesSubmitted.value.length === MAX_GUESSES_COUNT)
+const remaining = computed(() => {
+  const lastGuesses = MAX_GUESSES_COUNT - guessesSubmitted.value.length;
+  return isGameOver.value ? lastGuesses : lastGuesses - 1;
+})
 
 </script>
 
