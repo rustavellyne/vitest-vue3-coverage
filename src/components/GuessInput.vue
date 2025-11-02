@@ -1,6 +1,10 @@
 <template>
   <div class="user-input">
-    <guess-view v-if="!disabled" :guess="formattedGuessInProgress" />
+    <guess-view
+      v-if="!disabled"
+      :guess="formattedGuessInProgress"
+      :class="{ shake: hasFailedValidation }"
+    />
     <input
       v-model="formattedGuessInProgress"
       type="text"
@@ -25,6 +29,7 @@ const emit = defineEmits<{
   'guess-submitted': [guess: string]
 }>()
 const guessInProgress = ref<string>('');
+const hasFailedValidation = ref<boolean>(false);
 const formattedGuessInProgress = computed<string>({
   get () {
     return guessInProgress.value;
@@ -41,6 +46,8 @@ const formattedGuessInProgress = computed<string>({
 
 function onSubmitted () {
   if (!dictionary.includes(formattedGuessInProgress.value)) {
+    hasFailedValidation.value = true;
+    setTimeout(() => hasFailedValidation.value = false, 500);
     return;
   }
   emit('guess-submitted', formattedGuessInProgress.value);
@@ -52,5 +59,16 @@ function onSubmitted () {
 input {
   position: absolute;
   opacity: 0;
+}
+
+.shake {
+  animation: shake 0.1s linear 2;
+}
+
+@keyframes shake {
+  0% { transform: translateX(-2%) }
+  25% { transform: translateX(0) }
+  50% { transform: translateX(2%) }
+  75% { transform: translateX(0) }
 }
 </style>

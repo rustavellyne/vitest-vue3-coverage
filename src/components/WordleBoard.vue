@@ -6,7 +6,7 @@
         :key="guess"
         class="guesses__item"
       >
-        <guess-view :guess />
+        <guess-view :guess should-flip />
       </li>
       <li class="guesses__item">
         <guess-input

@@ -1,10 +1,11 @@
 <template>
   <ul class="word">
     <li
-        v-for="(letter, index) in guess.padEnd(WORD_SIZE, ' ')"
-        :key="`${letter}-${index}`"
-        :data-letter="letter"
-        class="letter"
+      v-for="(letter, index) in guess.padEnd(WORD_SIZE, ' ')"
+      :key="`${letter}-${index}`"
+      :data-letter="letter"
+      :class="{ 'with-flips': shouldFlip }"
+      class="letter"
     >{{ letter }}</li>
   </ul>
 </template>
@@ -12,7 +13,7 @@
 <script setup lang="ts">
 import {WORD_SIZE} from '@/settings.ts';
 
-defineProps<{guess: string}>();
+withDefaults(defineProps<{guess: string, shouldFlip?: boolean }>(), {shouldFlip: false });
 </script>
 
 <style scoped>
@@ -23,7 +24,9 @@ defineProps<{guess: string}>();
   gap: 0.25rem;
 }
 .letter {
-  background-color: #ffffff;
+  --front-color: hsl(0, 0%, 99%);
+  --back-color: hsl(0, 0%, 70%);
+  background-color: var(--front-color);
   border: 1px solid hsl(0, 0%, 70%);
   width: 5rem;
   height: 5rem;
@@ -37,8 +40,36 @@ defineProps<{guess: string}>();
     animation: pop 0.1s;
   }
 }
+
+.letter.with-flips {
+  animation: flip-card 0.3s linear forwards;
+
+  &:nth-child(1) { animation-delay: 0.25s }
+  &:nth-child(2) { animation-delay: 0.5s }
+  &:nth-child(3) { animation-delay: 0.75s }
+  &:nth-child(4) { animation-delay: 1s }
+  &:nth-child(5) { animation-delay: 1.25s }
+}
+
 @keyframes pop {
   0% { transform: scale(1) }
   100% { transform: scale(1.4) }
+}
+@keyframes flip-card {
+  0% {
+    transform: rotateY(0);
+    background-color: var(--front-color);
+  }
+  49% {
+    background-color: var(--front-color);
+  }
+  50% {
+    transform: rotateY(-90deg);
+    background-color: var(--back-color);
+  }
+  100% {
+    transform: rotateY(0);
+    background-color: var(--back-color);
+  }
 }
 </style>
