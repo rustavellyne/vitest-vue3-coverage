@@ -6,7 +6,7 @@
         :key="guess"
         class="guesses__item"
       >
-        <guess-view :guess should-flip />
+        <guess-view :guess :answer="wordOfTheDay" />
       </li>
       <li class="guesses__item">
         <guess-input
